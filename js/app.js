@@ -10,7 +10,8 @@ const app = (function() {
         const question = input.value;
         const key = db.push().key;
 
-
+        if ( question.length < 3 ) return;
+        
         db.child(key).set({
             body: question,
             answered: 0
