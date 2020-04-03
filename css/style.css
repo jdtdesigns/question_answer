@@ -1,0 +1,44 @@
+body {
+    background: #333;
+}
+
+h1, h2, h3, h4, li {
+    color: #fff;
+}
+
+h4 {
+    font-weight: 300;
+}
+
+form {
+    color: #fff;
+}
+
+input {
+    color: #333;
+}
+
+.wrap {
+    /* margin-top: 30ppx; */
+    padding: 4%;
+}
+
+.wrap .col {
+    padding: 50px;
+    border: 1px solid #555;
+}
+
+.questions .question {
+    font-size: 1.4rem;
+}
+
+.questions .question.answered {
+    text-decoration: line-through;
+}
+
+form button {
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 8px 40px !important;
+}
+
