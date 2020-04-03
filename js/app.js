@@ -18,7 +18,6 @@ const app = (function() {
             answered: 0
         });
 
-        questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${key}" class="question">${question}</li>`);
         input.value = '';
     }
 
@@ -41,19 +40,15 @@ const app = (function() {
 
     function getQuestions() {
         questionWrap.innerHTML = '';
-        db.once('value')
-            .then(questions => {
-                // console.log(Object.keys(questions.val()).length);
-                if ( !questions.val()) {
-                    questionWrap.innerHTML = '<h4 class="no-questions">No questions have been asked.</h4>';
-                }
+        db.on('child_added', snap => {
+            const question = snap.val();
 
-                questions.forEach(snap => {
-                    const question = snap.val();
+            if ( !question) {
+                questionWrap.innerHTML = '<h4 class="no-questions">No questions have been asked.</h4>';
+            }
 
-                    questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
-                })
-            });
+            questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
+        });
     }
 
     function init() {
