@@ -11,13 +11,15 @@ const app = (function() {
         const key = db.push().key;
 
         if ( question.length < 3 ) return;
-        
+
         db.child(key).set({
             body: question,
             answered: 0
         });
 
         input.value = '';
+
+        getQuestions();
     }
 
     function updateQuestionStatus(el) {
@@ -31,7 +33,8 @@ const app = (function() {
 
                 db.child(key).set(question);
 
-                el.classList = `question ${question.answered ? 'answered': ''}`;
+                // el.classList = `question ${question.answered ? 'answered': ''}`;
+                getQuestions();
             })
         
         
@@ -39,15 +42,18 @@ const app = (function() {
 
     function getQuestions() {
         questionWrap.innerHTML = '';
-        db.on('child_added', snap => {
-            
-            const question = snap.val();
-            const emptyEl = document.querySelector('.no-questions');
-
-            if ( emptyEl ) emptyEl.remove();
-
-            questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
-        });
+        db.once('value')
+            .then(questions => {
+        
+                const emptyEl = document.querySelector('.no-questions');
+    
+                if (questions && emptyEl) emptyEl.remove();
+    
+                questions.forEach(snap => {
+                    const question = snap.val();
+                    questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
+                })
+            });
     }
 
     function init() {
