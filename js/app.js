@@ -8,8 +8,8 @@ const app = (function() {
         const emptyEl = document.querySelector('.no-questions');
 
         if ( emptyEl ) emptyEl.remove();
-
-        const question = document.querySelector('#question').value;
+        const input = document.querySelector('#question');
+        const question = input.value;
         const key = db.push().key;
 
 
@@ -19,6 +19,7 @@ const app = (function() {
         });
 
         questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${key}" class="question">${question}</li>`);
+        input.value = '';
     }
 
     function updateQuestionStatus(el) {
