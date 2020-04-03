@@ -47,7 +47,7 @@ const app = (function() {
         
                 const emptyEl = document.querySelector('.no-questions');
     
-                if (questions && emptyEl) emptyEl.remove();
+                if (Object.keys(questions).length && emptyEl) emptyEl.remove();
     
                 questions.forEach(snap => {
                     const question = snap.val();
