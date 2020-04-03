@@ -5,9 +5,7 @@ const app = (function() {
     function addQuestion(e) {
         e.preventDefault();
 
-        const emptyEl = document.querySelector('.no-questions');
-
-        if ( emptyEl ) emptyEl.remove();
+        
         const input = document.querySelector('#question');
         const question = input.value;
         const key = db.push().key;
@@ -41,11 +39,11 @@ const app = (function() {
     function getQuestions() {
         questionWrap.innerHTML = '';
         db.on('child_added', snap => {
+            
             const question = snap.val();
+            const emptyEl = document.querySelector('.no-questions');
 
-            if ( !question) {
-                questionWrap.innerHTML = '<h4 class="no-questions">No questions have been asked.</h4>';
-            }
+            emptyEl.remove();
 
             questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
         });
