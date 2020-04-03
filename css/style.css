@@ -30,6 +30,8 @@ input {
 
 .questions .question {
     font-size: 1.4rem;
+    cursor: pointer;
+    user-select: none;
 }
 
 .questions .question.answered {

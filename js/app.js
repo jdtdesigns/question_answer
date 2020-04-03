@@ -5,11 +5,15 @@ const app = (function() {
     function addQuestion(e) {
         e.preventDefault();
 
+        const emptyEl = document.querySelector('.no-questions');
+
+        if ( emptyEl ) emptyEl.remove();
+
         const question = document.querySelector('#question').value;
         const key = db.push().key;
 
 
-        db.push({
+        db.child(key).set({
             body: question,
             answered: 0
         });
@@ -19,7 +23,7 @@ const app = (function() {
 
     function updateQuestionStatus(el) {
         const key = el.dataset.key;
-        
+
         db.child(key).once('value')
             .then(snap => {
                 const question = snap.val();
@@ -40,12 +44,12 @@ const app = (function() {
             .then(questions => {
                 // console.log(Object.keys(questions.val()).length);
                 if ( !questions.val()) {
-                    questionWrap.innerHTML = '<h4>No questions have been asked.</h4>';
+                    questionWrap.innerHTML = '<h4 class="no-questions">No questions have been asked.</h4>';
                 }
 
                 questions.forEach(snap => {
                     const question = snap.val();
-                    console.log(question);
+
                     questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
                 })
             });
@@ -60,7 +64,9 @@ const app = (function() {
         input.addEventListener('click', addQuestion);
 
         body.addEventListener('click', e => {
+            // console.log(e.target.dataset);
             if ( e.target.classList.contains('question') ) {
+                // console.log('fired');
                 updateQuestionStatus(e.target);
             }
         })
