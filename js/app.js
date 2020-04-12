@@ -70,9 +70,9 @@ const app = (function() {
 
         db.on('child_added', snap => {
             const question = snap.val();
-            const emptyEl = document.querySelector('.no-questions');
+            const emptyNotice = document.querySelector('.no-questions');
 
-            if (question) emptyEl.style.display = 'none';
+            if (question) emptyNotice.style.display = 'none';
             
             questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
         });
@@ -85,10 +85,10 @@ const app = (function() {
         });
 
         db.on('child_removed', snap => {
-            const emptyEl = document.querySelector('.no-questions');
+            const emptyNotice = document.querySelector('.no-questions');
             
             questionWrap.innerHTML = '';
-            emptyEl.style.display = 'initial';
+            emptyNotice.style.display = 'initial';
         });
     }
 
