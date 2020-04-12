@@ -1,5 +1,6 @@
 const app = (function() {
     const db = firebase.database().ref('/questions');
+    const passwordRef = firebase.database().ref('/password');
     const questionWrap = document.querySelector('.questions');
 
     function addQuestion(e) {
@@ -34,15 +35,31 @@ const app = (function() {
     }
 
     function clearQuestions() {
-        const check = confirm('Are you sure you want to delete all questions?');
+        const input = prompt('Please enter the password.');
 
-        if ( check ) {
-            db.remove();
-        }
+        passwordRef.once('value')
+            .then(snap => {
+                const password = snap.val();
+
+                if ( input === password ) {
+                    db.remove();
+                    passwordRef.remove();
+                }
+            });
     }
 
     function setupListeners() {
         questionWrap.innerHTML = '';
+
+        passwordRef.once('value')
+            .then(snap => {
+                const password = snap.val();
+                if (!password) {
+                    const input = prompt('Please enter a password.');
+
+                    if ( input ) passwordRef.set(input);
+                }
+            })
 
         db.on('child_added', snap => {
             const question = snap.val();
@@ -66,17 +83,15 @@ const app = (function() {
             questionWrap.innerHTML = '';
             emptyEl.style.display = 'initial';
         });
-
-        const clearBtn = document.querySelector('#clear');
-        clear.addEventListener('click', clearQuestions);
     }
 
     function init() {
         const input = document.querySelector('#input');
         const body = document.querySelector('body');
+        const clearBtn = document.querySelector('#clear');
 
         input.addEventListener('click', addQuestion);
-
+        clearBtn.addEventListener('click', clearQuestions);
         body.addEventListener('click', e => {
             if ( e.target.classList.contains('question') ) {
                 updateQuestionStatus(e.target);
