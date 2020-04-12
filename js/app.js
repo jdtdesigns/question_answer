@@ -72,7 +72,7 @@ const app = (function() {
             const question = snap.val();
             const emptyEl = document.querySelector('.no-questions');
 
-            if (question && emptyEl) emptyEl.style.display = 'none';
+            if (question) emptyEl.style.display = 'none';
             
             questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
         });
