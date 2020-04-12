@@ -5,7 +5,6 @@ const app = (function() {
 
     function addQuestion(e) {
         e.preventDefault();
-
         
         const input = document.querySelector('#question');
         const question = input.value;
@@ -44,6 +43,8 @@ const app = (function() {
                 if ( input === password ) {
                     db.remove();
                     passwordRef.remove();
+                    
+                    window.location.reload();
                 }
             });
     }
@@ -54,12 +55,19 @@ const app = (function() {
         passwordRef.once('value')
             .then(snap => {
                 const password = snap.val();
-                if (!password) {
-                    const input = prompt('Please enter a password.');
 
-                    if ( input ) passwordRef.set(input);
+                if (!password) {
+                    const getInput = () => {
+                        const input = prompt('Please enter a password.');
+
+                        if ( input ) 
+                            passwordRef.set(input);
+                        else getInput();                            
+                    }
+
+                    getInput();
                 }
-            })
+            });
 
         db.on('child_added', snap => {
             const question = snap.val();
