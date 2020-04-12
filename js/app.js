@@ -18,8 +18,6 @@ const app = (function() {
         });
 
         input.value = '';
-
-        getQuestions();
     }
 
     function updateQuestionStatus(el) {
@@ -32,45 +30,60 @@ const app = (function() {
                 question.answered = !question.answered;
 
                 db.child(key).set(question);
-
-                // el.classList = `question ${question.answered ? 'answered': ''}`;
-                getQuestions();
-            })
-        
-        
-    }
-
-    function getQuestions() {
-        questionWrap.innerHTML = '';
-        db.once('value')
-            .then(questions => {
-        
-                const emptyEl = document.querySelector('.no-questions');
-
-                if (questions.val() && emptyEl) emptyEl.remove();
-    
-                questions.forEach(snap => {
-                    const question = snap.val();
-                    questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
-                })
             });
     }
 
+    function clearQuestions() {
+        const check = confirm('Are you sure you want to delete all questions?');
+
+        if ( check ) {
+            db.remove();
+        }
+    }
+
+    function setupListeners() {
+        questionWrap.innerHTML = '';
+
+        db.on('child_added', snap => {
+            const question = snap.val();
+            const emptyEl = document.querySelector('.no-questions');
+
+            if (question && emptyEl) emptyEl.style.display = 'none';
+            
+            questionWrap.insertAdjacentHTML('beforeend', `<li data-key="${snap.key}" class="question ${question.answered ? 'answered' : ''}">${question.body}</li>`);
+        });
+
+        db.on('child_changed', snap => {
+            const question = snap.val();
+            const el = document.querySelector(`li[data-key="${snap.key}"]`);
+
+            el.classList = `question ${question.answered ? 'answered': ''}`;
+        });
+
+        db.on('child_removed', snap => {
+            const emptyEl = document.querySelector('.no-questions');
+            
+            questionWrap.innerHTML = '';
+            emptyEl.style.display = 'initial';
+        });
+
+        const clearBtn = document.querySelector('#clear');
+        clear.addEventListener('click', clearQuestions);
+    }
+
     function init() {
-        getQuestions();
-        
         const input = document.querySelector('#input');
         const body = document.querySelector('body');
 
         input.addEventListener('click', addQuestion);
 
         body.addEventListener('click', e => {
-            // console.log(e.target.dataset);
             if ( e.target.classList.contains('question') ) {
-                // console.log('fired');
                 updateQuestionStatus(e.target);
             }
-        })
+        });
+
+        setupListeners();
     }
 
 
