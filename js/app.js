@@ -49,7 +49,7 @@ const app = (function() {
             });
     }
 
-    function setupListeners() {
+    function setupFBListeners() {
         questionWrap.innerHTML = '';
 
         passwordRef.once('value')
@@ -106,7 +106,7 @@ const app = (function() {
             }
         });
 
-        setupListeners();
+        setupFBListeners();
     }
 
 
