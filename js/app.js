@@ -58,7 +58,7 @@ const app = (function() {
 
                 if (!password) {
                     const getInput = () => {
-                        const input = prompt('Please enter a password.');
+                        const input = prompt('Please enter a new password.');
 
                         if ( input ) 
                             passwordRef.set(input);
