@@ -8,11 +8,10 @@ const app = (function() {
         
         const input = document.querySelector('#question');
         const question = input.value;
-        const key = db.push().key;
 
         if ( question.length < 3 ) return;
 
-        db.child(key).set({
+        db.push({
             body: question,
             answered: 0
         });
